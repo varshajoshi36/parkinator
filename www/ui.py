@@ -1,25 +1,3 @@
-""" 
-Example Python 2.7+/3.3+ Application
-
-This application consists of a HTTP 1.1 server using the HTTP chunked transfer
-coding (https://tools.ietf.org/html/rfc2616#section-3.6.1) and a minimal HTML5
-user interface that interacts with it.
-
-The goal of this example is to start streaming the speech to the client (the
-HTML5 web UI) as soon as the first consumable chunk of speech is returned in
-order to start playing the audio as soon as possible.
-For use cases where low latency and responsiveness are strong requirements,
-this is the recommended approach.
-
-The service documentation contains examples for non-streaming use cases where
-waiting for the speech synthesis to complete and fetching the whole audio stream
-at once are an option.
-
-To test the application, run 'python server.py' and then open the URL
-displayed in the terminal in a web browser (see index.html for a list of
-supported browsers). The address and port for the server can be passed as
-parameters to server.py. For more information, run: 'python server.py -h'
-"""
 from argparse import ArgumentParser
 from collections import namedtuple
 from contextlib import closing
@@ -27,7 +5,7 @@ from io import BytesIO
 from json import dumps as json_encode
 import os
 import sys
-import requests as req
+
 
 if sys.version_info >= (3, 0):
     from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -61,13 +39,6 @@ PROTOCOL = "http"
 ROUTE_INDEX = "/index.html"
 ROUTE_VOICES = "/voices"
 ROUTE_READ = "/read"
-
-
-# Create a client using the credentials and region defined in the adminuser
-# section of the AWS credentials and configuration files
-session = Session(profile_name="adminuser")
-polly = session.client("polly")
-
 
 class HTTPStatusError(Exception):
     """Exception wrapping a value from http.server.HTTPStatus"""
@@ -188,15 +159,13 @@ class ChunkedHTTPRequestHandler(BaseHTTPRequestHandler):
                             data_stream=BytesIO(bytes_data))
 
     def get_garage_data(self):
-     	ur_str = "http://0.0.0.0:8080/read"
-        response =  req.get(ur_str)
-	print(type(response))
-	return response
+        ur_str = "http://ec2-54-183-130-206.us-west-1.compute.amazonaws.com:8080/read"
+        return req.get(ur_str)
 
 
     def form_sentence(self):
-	garage_data = self.get_garage_data()
-	print(garage_data)
+	garage_data = self.get_garage_data
+	printf(garage_data)
 	sentence = ""
 	garages = garage_data.keys()
 
@@ -209,7 +178,7 @@ class ChunkedHTTPRequestHandler(BaseHTTPRequestHandler):
     def route_read(self, path, query):
         """Handles routing for reading text (speech synthesis)"""
         # Get the parameters from the query string
-        text = self.form_sentence()
+        text = self.form_sentence
         voiceId = "Salli"
         outputFormat = self.query_get(query, "outputFormat")
 

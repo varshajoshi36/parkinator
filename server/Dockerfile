@@ -2,7 +2,7 @@
 # `ARG` is the only directive allowed before the `FROM` directive.
 #
 # This is used to dynamically change the tag for this python image. Use with caution.
-ARG PYTHON_VERSION=2.7
+ARG PYTHON_VERSION=3.6
 FROM python:${PYTHON_VERSION}-alpine
 
 # This is a build arg that could be overwritten, but is unlikely to be.
@@ -17,8 +17,7 @@ COPY requirements.txt /usr/src/app/
 RUN pip install --no-cache-dir -r /usr/src/app/requirements.txt
 
 COPY www ${WWW_ROOT}
-COPY .aws/ ~/.aws
 
-EXPOSE 9090
+EXPOSE 8080
 
-CMD ["python", "/usr/src/app/server.py"]
+CMD ["python", "/usr/src/app/app.py"]
