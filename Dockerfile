@@ -2,7 +2,7 @@
 # `ARG` is the only directive allowed before the `FROM` directive.
 #
 # This is used to dynamically change the tag for this python image. Use with caution.
-ARG PYTHON_VERSION=3.6
+ARG PYTHON_VERSION=2.7
 FROM python:${PYTHON_VERSION}-alpine
 
 # This is a build arg that could be overwritten, but is unlikely to be.
@@ -43,7 +43,6 @@ COPY requirements.txt /usr/src/app/
 RUN pip install --no-cache-dir -r /usr/src/app/requirements.txt
 
 COPY www ${WWW_ROOT}
-RUN python ${WWW_ROOT}/app.py
 
 EXPOSE 8080
 
@@ -51,3 +50,4 @@ EXPOSE 8080
 # The `-u` flag forces Python to flush its buffer whenever it receives input.
 #
 CMD ["python", "-u", "-m", "http.server", "8080"]
+CMD ["python", "/usr/src/app/app.py"]

@@ -4,7 +4,7 @@ VERSION=latest
 PYTHON_VERSION=3.6.5
 
 build:
-	docker image build $(BUILD_ARGS) -f Dockerfile .
+	docker build -t kirtivr/parkinator .
 
 run:
-	docker container run --rm -p $(PORT):$(PORT)
+	docker run --name parkinator -p $(PORT):$(PORT) kirtivr/parkinator
