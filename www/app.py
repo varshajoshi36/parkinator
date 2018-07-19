@@ -15,23 +15,7 @@ garage_DB = {}
 # Return parking garage details
 @app.route("/read", methods=['GET'])
 def read():
-    # d = {}
-    # d["Creekside"] = {
-    #     "name": "Creekside",
-    #     "total": 100,
-    #     "occupied": 80,
-    #     "avl": 20,
-    #     "lvlarr": [1, 30, 10], [2, 30, 10], [3, 40, 0]]
-    # }
-    # d["Central"] = {
-    #     "name": "Central Garage",
-    #     "total": 100,
-    #     "occupied": 80,
-    #     "avl": 20,
-    #     "lvlarr": [[1, 30, 10], [2, 30, 10], [3, 40, 0]] 
-    # }
     return jsonify(garage_DB)
-
 
 # Add cars to garage and level
 @app.route("/add", methods=['POST'])

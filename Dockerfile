@@ -2,7 +2,7 @@
 # `ARG` is the only directive allowed before the `FROM` directive.
 #
 # This is used to dynamically change the tag for this python image. Use with caution.
-ARG PYTHON_VERSION=3.6
+ARG PYTHON_VERSION=2.7
 FROM python:${PYTHON_VERSION}-alpine
 
 # This is a build arg that could be overwritten, but is unlikely to be.
