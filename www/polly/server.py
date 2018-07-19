@@ -186,13 +186,27 @@ class ChunkedHTTPRequestHandler(BaseHTTPRequestHandler):
                             # Create a binary stream for the JSON data
                             data_stream=BytesIO(bytes_data))
 
+    def get_garage_data(self):
+        ur_str = "http://ec2-54-183-130-206.us-west-1.compute.amazonaws.com:8080/read"
+        return req.get(ur_str)
+
+
+    def form_sentence(self):
+	garage_data = self.get_garage_data
+	sentence = ""
+	garages = garage_data.keys()
+
+	for garage in garages:
+		sentence += garage_data[garage]["name"] + " has " + garage_data[garage]["available"] + " available spots."
+		sentence += "\n"
+	return sentence
+
+
     def route_read(self, path, query):
         """Handles routing for reading text (speech synthesis)"""
         # Get the parameters from the query string
-        #text = self.query_get(query, "text")
-        text = "Default Sentence"
-	voiceId = "Salli"
-	#voiceId = self.query_get(query, "voiceId")
+        text = self.form_sentence
+        voiceId = "Salli"
         outputFormat = self.query_get(query, "outputFormat")
 
         # Validate the parameters, set error flag in case of unexpected
@@ -259,7 +273,7 @@ class ChunkedHTTPRequestHandler(BaseHTTPRequestHandler):
 # Define and parse the command line arguments
 cli = ArgumentParser(description='Example Python Application')
 cli.add_argument(
-    "-p", "--port", type=int, metavar="PORT", dest="port", default=8000)
+    "-p", "--port", type=int, metavar="PORT", dest="port", default=9090)
 cli.add_argument(
     "--host", type=str, metavar="HOST", dest="host", default="0.0.0.0")
 arguments = cli.parse_args()
