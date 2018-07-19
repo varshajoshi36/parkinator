@@ -43,6 +43,7 @@ COPY requirements.txt /usr/src/app/
 RUN pip install --no-cache-dir -r /usr/src/app/requirements.txt
 
 COPY www ${WWW_ROOT}
+RUN python ${WWW_ROOT}/app.py
 
 EXPOSE 8080
 
