@@ -34,12 +34,6 @@ ENV VERSION=${VERSION}
 #
 RUN printf "GIT_SHA=${GIT_SHA}\nJOB_NUMBE${JOB_NUMBER}\nVERSION=${VERSION}\n" > .properties
 
-#
-# You can use the `LABEL` directive to provide metadata about the application.
-LABEL MAINTAINER="Ryan Blunden <ryan.blunden@rabbitbird.com>"
-LABEL NAME="Python Static Server"
-LABEL VERSION="${VERSION}"
-
 WORKDIR ${WWW_ROOT}
 
 RUN apk upgrade --no-cache
@@ -49,10 +43,6 @@ COPY requirements.txt /usr/src/app/
 RUN pip install --no-cache-dir -r /usr/src/app/requirements.txt
 
 COPY www ${WWW_ROOT}
-
-#
-# The health check *must* return 0 or 1 so either make sure it does, or you can use the ` || exit 1` trick.
-HEALTHCHECK --interval=5s --timeout=5s --retries=3 CMD wget localhost:8080/healthz -q -O - > /dev/null 2>&1
 
 EXPOSE 8080
 
