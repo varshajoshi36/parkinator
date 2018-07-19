@@ -41,10 +41,10 @@ def add():
         req = request.get_json()
         garage_name = req['garage']
         level = req['lvl']
-
+        # print garage_DB[garage_name]
         garage_DB[garage_name]["lvlarr"][level - 1][2] -= 1
 
-        garage_DB[garage_name]["avl"] -= 1
+        garage_DB[garage_name]["available"] -= 1
         garage_DB[garage_name]["occupied"] += 1
 
         return jsonify(garage_DB)
@@ -62,7 +62,7 @@ def remove():
 
         garage_DB[garage_name]["lvlarr"][level - 1][2] += 1
 
-        garage_DB[garage_name]["avl"] += 1
+        garage_DB[garage_name]["available"] += 1
         garage_DB[garage_name]["occupied"] -= 1
 
         return jsonify(garage_DB)
@@ -110,5 +110,4 @@ def removeGarage():
         return "Fail"
 
 if __name__ == '__main__':
-
 	app.run(port=8080)
