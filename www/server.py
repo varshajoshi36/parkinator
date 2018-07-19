@@ -189,13 +189,24 @@ class ChunkedHTTPRequestHandler(BaseHTTPRequestHandler):
 
     def get_garage_data(self):
         ur_str = "http://ec2-54-183-130-206.us-west-1.compute.amazonaws.com:8080/read"
+<<<<<<< HEAD
         response = req.get(ur_str)
 	data = response.json()
+	print (response)
 	return data
+=======
+        response =  req.get(ur_str)
+	print(type(response))
+	return response
+>>>>>>> b371846614a546978186de59f7a81bda124f0ec0
+
 
     def form_sentence(self):
 	garage_data = self.get_garage_data()
+<<<<<<< HEAD
+=======
 	print(garage_data)
+>>>>>>> b371846614a546978186de59f7a81bda124f0ec0
 	sentence = ""
 	garages = garage_data.keys()
 
