@@ -6,48 +6,55 @@ import random
 import sys
 import time
 
-BASE_URL = "http://ec2-54-183-130-206.us-west-1.compute.amazonaws.com:8080/read"       # TODO this should probably be a command line parameter
+BASE_URL = "http://10.2.108.20:8080"
 
 # Make an API call to increment the count
 def car_arrives(garage, level):
     post_data = create_payload(garage, level)
-    requests.post(ARRIVE_URL, json = post_data)
+    r = requests.post(ARRIVE_URL, json = post_data)
+    print (r.status_code)
 
 # Make an API call to decrement the count
 def car_departs(garage, level):
     post_data = create_payload(garage, level)
-    requests.post(DEPART_URL, json = post_data)
-
+    r = requests.post(DEPART_URL, json = post_data)
+    print (r.status_code)
 # Create a JSON string that will be POSTed to the appropriate endpoint
 def create_payload(garage, level):
     data = {}
-    data['name'] = garage
+    data['garage'] = garage
     data['lvl'] = level
 
+    print (data)
     return data
 
 state_map = {}
-state_map['Central'] = {}
-state_map['Creekside'] = {}
-state_map['Hilltop'] = {}
-state_map['Prom'] = {}
+#state_map['Central'] = {}
+#state_map['Creekside'] = {}
+#state_map['Hilltop'] = {}
+#state_map['Prom'] = {}
+#
+#state_map['Central']['total'] = [20, 30]
+#state_map['Creekside']['total'] = [20, 30]
+#state_map['Hilltop']['total'] = [30,30,20, 20]
+#state_map['Prom']['total'] = [20, 20, 60]
+#
+#
+#state_map['Central']['free'] = [20, 30]
+#state_map['Creekside']['free'] = [20, 30]
+#state_map['Hilltop']['free'] = [30,30,20, 20]
+#state_map['Prom']['free'] = [20, 20, 60]
 
-state_map['Central']['total'] = [40, 40, 40]
-state_map['Creekside']['total'] = [40, 40, 40]
-state_map['Hilltop']['total'] = [40,40,40]
-state_map['Prom']['total'] = [40, 40, 40]
-
-state_map['Central']['free'] = [40,40,40]
-state_map['Creekside']['free'] = [40,40,40]
-state_map['Hilltop']['free'] = [40,40,40]
-state_map['Prom']['free'] = [40,40,40]
-garages = ['Central', 'Creekside', 'Hilltop', 'Prom']
+garages = ['Central', 'Creekside','Prom', 'Hilltop' ]
 
 def try_arrive():
     candidate_garages = []
     for garage in garages:
-        if state_map[garage]['free'] != [0,0,0]:
-            candidate_garages.append(garage)
+        for i in state_map[garage]['free']:
+            if i != 0 :
+                candidate_garages.append(garage)
+                break
+
     if candidate_garages == []:
         return
 
@@ -58,6 +65,9 @@ def try_arrive():
     garage_level_array = state_map[garage_choice]['free']
     while True:
         #Car arrives at the initial level
+        if garage_level_array[current_level] == 0:
+            current_level += 1
+            continue
         car_arrives(garage, current_level + 1)
         garage_level_array[current_level] -= 1
 
@@ -72,7 +82,7 @@ def try_arrive():
             return
         # Else, 20% chance of proceeding to higher level
         toss = random.random()
-        if toss >= 0.8:
+        if toss >= 0.6:
             print("Car stopped in garage {0} at level {1}".format(garage_choice, current_level + 1))
             return
         # Car decided to go one level above, so decrement from the current count
@@ -91,9 +101,11 @@ def try_depart():
     garage_choice= random.choice(candidate_garages)
     for i in range(len(state_map[garage_choice]['total'])):
         candidate_levels = []
-        if state_map[garage_choice]['total'] != state_map[garage_choice]['free']:
+        if state_map[garage_choice]['total'][i] != state_map[garage_choice]['free'][i]:
             candidate_levels.append(i)
 
+    if candidate_levels == []:
+        return
     level_choice = random.choice(candidate_levels)
 
     #Simulate the car leaving the car
@@ -109,7 +121,13 @@ def simulate_event():
     garage = random.choice(garages)
     level = random.choice(list(range(3)))
     #TODO Assert - make sure that a car does not leave an empty garage
-    leave_or_arrive = random.choice(['leave', 'arrive'])
+    #leave_or_arrive = random.choice(['leave', 'arrive'])
+    leave_or_arrive = 'arrive'
+    if random.random() < 0.7:
+        leave_or_arrive = 'arrive'
+    else:
+        leave_or_arrive = 'depart'
+
     if leave_or_arrive == 'arrive':
         try_arrive()
     else:
@@ -121,10 +139,29 @@ def simulate_event():
 def event_loop():
     while True:
         simulate_event()
-        time.sleep(2)
+        time.sleep(1)
+
+
+def get_state():
+    url = BASE_URL + "/read"
+    state = requests.get(url).json()
+    for gname in state:
+        state_map[gname] = {}
+        larr = state[gname]['lvlarr']
+
+        state_map[gname]['total'] = []
+        state_map[gname]['free'] = []
+        for i in larr:
+            state_map[gname]['total'].append(i[1])
+            state_map[gname]['free'].append(i[2])
+
+
 
 if __name__ == '__main__':
     #BASE_URL = sys.argv[1]
     ARRIVE_URL = BASE_URL + "/add"
     DEPART_URL = BASE_URL + "/remove"
+
+    get_state()
+
     event_loop()
