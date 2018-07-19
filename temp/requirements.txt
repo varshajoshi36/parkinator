@@ -1,0 +1,6 @@
+Flask
+Flask_restful
+flask_cors
+boto3
+botocore
+requests
