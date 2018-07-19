@@ -6,9 +6,7 @@ import random
 import sys
 import time
 
-BASE_URL = "TODO FILL ME"       # TODO this should probably be a command line parameter
-ARRIVE_URL = BASE_URL + "/arrival"
-DEPART_URL = BASE_URL + "/departure"
+BASE_URL = "http://ec2-54-183-130-206.us-west-1.compute.amazonaws.com:8080/read"       # TODO this should probably be a command line parameter
 
 # Make an API call to increment the count
 def car_arrives(garage, level):
@@ -19,7 +17,7 @@ def car_arrives(garage, level):
 def car_departs(garage, level):
     post_data = create_payload(garage, level)
     requests.post(DEPART_URL, json = post_data)
-    
+
 # Create a JSON string that will be POSTed to the appropriate endpoint
 def create_payload(garage, level):
     data = {}
@@ -29,16 +27,21 @@ def create_payload(garage, level):
     return data
 
 state_map = {}
-state_map['creekside'] = {}
-state_map['hilltop'] = {}
-state_map['prom'] = {}
-state_map['creekside']['total'] = [40, 40, 40]
-state_map['hilltop']['total'] = [40,40,40]
-state_map['prom']['total'] = [40, 40, 40]
-state_map['creekside']['free'] = [40,40,40]
-state_map['hilltop']['free'] = [40,40,40]
-state_map['prom']['free'] = [40,40,40]
-garages = ['creekside', 'hilltop', 'prom']
+state_map['Central'] = {}
+state_map['Creekside'] = {}
+state_map['Hilltop'] = {}
+state_map['Prom'] = {}
+
+state_map['Central']['total'] = [40, 40, 40]
+state_map['Creekside']['total'] = [40, 40, 40]
+state_map['Hilltop']['total'] = [40,40,40]
+state_map['Prom']['total'] = [40, 40, 40]
+
+state_map['Central']['free'] = [40,40,40]
+state_map['Creekside']['free'] = [40,40,40]
+state_map['Hilltop']['free'] = [40,40,40]
+state_map['Prom']['free'] = [40,40,40]
+garages = ['Central', 'Creekside', 'Hilltop', 'Prom']
 
 def try_arrive():
     candidate_garages = []
@@ -92,14 +95,14 @@ def try_depart():
             candidate_levels.append(i)
 
     level_choice = random.choice(candidate_levels)
-    
+
     #Simulate the car leaving the car
     for i in range(level_choice, 0, -1):
         car_departs(garage_choice, i + 1)
         car_arrives(garage_choice, i)
     car_departs(garage_choice, 1)
     state_map[garage_choice]['free'][level_choice] += 1
-    
+
     print("Car departed from garage {0} at level {1}".format(garage_choice, level_choice + 1))
 
 def simulate_event():
@@ -121,7 +124,7 @@ def event_loop():
         time.sleep(2)
 
 if __name__ == '__main__':
-    BASE_URL = sys.argv[1]
-    ARRIVE_URL = BASE_URL + "/arrival"
-    DEPART_URL = BASE_URL + "/departure"
+    #BASE_URL = sys.argv[1]
+    ARRIVE_URL = BASE_URL + "/add"
+    DEPART_URL = BASE_URL + "/remove"
     event_loop()
