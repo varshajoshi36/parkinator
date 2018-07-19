@@ -7,4 +7,4 @@ build:
 	docker build -t kirtivr/parkinator .
 
 run:
-	docker run --name parkinator -d -p $(PORT):$(PORT) kirtivr/parkinator
+	docker run --rm --name parkinator -d -p $(PORT):5000 kirtivr/parkinator

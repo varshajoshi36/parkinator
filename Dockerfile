@@ -17,10 +17,7 @@ COPY requirements.txt /usr/src/app/
 RUN pip install --no-cache-dir -r /usr/src/app/requirements.txt
 
 COPY www ${WWW_ROOT}
-COPY docker ${WWW_ROOT}
-
-HEALTHCHECK --interval=5s --timeout=5s --retries=3 CMD wget localhost:8080/healthz -q -O - > /dev/null 2>&1
 
 EXPOSE 8080
 
-CMD ["python", "/usr/src/app/webserver/app.py"]
+CMD ["python", "/usr/src/app/app.py"]

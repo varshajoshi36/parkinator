@@ -193,6 +193,7 @@ class ChunkedHTTPRequestHandler(BaseHTTPRequestHandler):
 
     def form_sentence(self):
 	garage_data = self.get_garage_data
+	printf(garage_data)
 	sentence = ""
 	garages = garage_data.keys()
 
