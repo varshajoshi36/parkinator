@@ -189,8 +189,10 @@ class ChunkedHTTPRequestHandler(BaseHTTPRequestHandler):
     def route_read(self, path, query):
         """Handles routing for reading text (speech synthesis)"""
         # Get the parameters from the query string
-        text = self.query_get(query, "text")
-        voiceId = self.query_get(query, "voiceId")
+        #text = self.query_get(query, "text")
+        text = "Default Sentence"
+	voiceId = "Salli"
+	#voiceId = self.query_get(query, "voiceId")
         outputFormat = self.query_get(query, "outputFormat")
 
         # Validate the parameters, set error flag in case of unexpected
