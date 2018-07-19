@@ -27,6 +27,7 @@ from io import BytesIO
 from json import dumps as json_encode
 import os
 import sys
+import requests as req
 
 if sys.version_info >= (3, 0):
     from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -188,17 +189,19 @@ class ChunkedHTTPRequestHandler(BaseHTTPRequestHandler):
 
     def get_garage_data(self):
         ur_str = "http://ec2-54-183-130-206.us-west-1.compute.amazonaws.com:8080/read"
-        return req.get(ur_str)
+        response = req.get(ur_str)
+	data = response.json()
+	print (response)
+	return data
 
 
     def form_sentence(self):
-	garage_data = self.get_garage_data
-	printf(garage_data)
+	garage_data = self.get_garage_data()
 	sentence = ""
 	garages = garage_data.keys()
 
 	for garage in garages:
-		sentence += garage_data[garage]["name"] + " has " + garage_data[garage]["available"] + " available spots."
+		sentence += garage_data[garage]["name"] + " has " + str(garage_data[garage]["available"]) + " available spots."
 		sentence += "\n"
 	return sentence
 
@@ -206,7 +209,7 @@ class ChunkedHTTPRequestHandler(BaseHTTPRequestHandler):
     def route_read(self, path, query):
         """Handles routing for reading text (speech synthesis)"""
         # Get the parameters from the query string
-        text = self.form_sentence
+        text = self.form_sentence()
         voiceId = "Salli"
         outputFormat = self.query_get(query, "outputFormat")
 
