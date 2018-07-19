@@ -188,7 +188,7 @@ class ChunkedHTTPRequestHandler(BaseHTTPRequestHandler):
                             data_stream=BytesIO(bytes_data))
 
     def get_garage_data(self):
-        ur_str = "http://ec2-54-183-130-206.us-west-1.compute.amazonaws.com:8080/read"
+        ur_str = "http://10.2.108.20:8080/read"
         response = req.get(ur_str)
 	data = response.json()
 	return data
