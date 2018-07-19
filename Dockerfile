@@ -49,5 +49,5 @@ EXPOSE 8080
 #
 # The `-u` flag forces Python to flush its buffer whenever it receives input.
 #
-CMD ["python", "-u", "-m", "http.server", "8080"]
+#CMD ["python", "-u", "-m", "http.server", "8080"]
 CMD ["python", "/usr/src/app/app.py"]
